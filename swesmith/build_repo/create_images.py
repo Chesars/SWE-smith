@@ -90,12 +90,17 @@ def build_all_images(
         ).values()
     )
 
-    print(f"Total profiles to build: {len(profiles_to_build)}")
-    for profile in profiles_to_build:
+    print("Profiles to build:")
+    for profile in sorted(profiles_to_build, key=lambda p: p.image_name):
         print(f"- {profile.image_name}")
 
     if not proceed:
-        proceed = input("Proceed with building images? (y/n): ").lower() == "y"
+        proceed = (
+            input(
+                f"Proceed with building {len(profiles_to_build)} images? (y/n): "
+            ).lower()
+            == "y"
+        )
     if not proceed:
         return [], []
 
@@ -162,6 +167,7 @@ def main():
         help="Force rebuild even if image already exists",
     )
     parser.add_argument(
+        "-p",
         "--push",
         action="store_true",
         help="Push built images to Docker Hub after building (default: False)",
